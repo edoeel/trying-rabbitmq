@@ -1,3 +1,3 @@
-CREATE USER 'rabbit-user'@'%' IDENTIFIED BY 'rabbit-password';
-GRANT ALL ON `rabbit-db`.* TO 'rabbit-user'@'%';
+CREATE USER 'rabbitmq-user'@'%' IDENTIFIED BY 'rabbitmq-password';
+GRANT ALL ON `rabbitmq-db`.* TO 'rabbitmq-user'@'%';
 FLUSH PRIVILEGES;

@@ -14,15 +14,18 @@ services:
       - "443:443"
     volumes:
       - "./:/var/www/html"
+    depends_on:
+      - mysql
+      - rabbitmq
     environment:
       - DATABASE_TYPE=mysql
-      - DATABASE_USER=rabbit-user
-      - DATABASE_PASSWORD=rabbit-password
-      - DATABASE_NAME=rabbit-db
-      - RABBIT_HOST=localhost
-      - RABBIT_PORT=5672
-      - RABBIT_USER=guest
-      - RABBIT_PASSWORD=guest
+      - DATABASE_USER=rabbitmq-user
+      - DATABASE_PASSWORD=rabbitmq-password
+      - DATABASE_NAME=rabbitmq-db
+      - RABBITMQ_HOST=localhost
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest
+      - RABBITMQ_PASSWORD=guest
   mysql:
     build:
       context: .docker/mysql

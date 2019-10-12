@@ -1,4 +1,4 @@
-USE `rabbit-db`;
+USE `rabbitmq-db`;
 SET NAMES UTF8;
 
 CREATE TABLE `event_sent`
