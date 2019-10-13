@@ -15,16 +15,20 @@ $connection = new AMQPStreamConnection(
 
 // connection to one of free channel
 $channel = $connection->channel();
+echo 'Channel id: ' . $channel->getChannelId() . "\n";
 
 // creating queue if not exist
 $queueName = 'queue01';
 $channel->queue_declare($queueName, false, false, false, false);
 
 // publishing message
-$textMsg = 'Hello World from ' . date('Y-m-d H:i:s');
-$msg = new AMQPMessage($textMsg);
-$channel->basic_publish($msg, '', $queueName);
-echo " [x] Sent '{$textMsg}'\n";
+$messageCount = $_SERVER['argv'][1];
+for ($x = 0; $x < $messageCount; $x++) {
+    $textMsg = 'Hello World from ' . date('Y-m-d H:i:s');
+    $msg = new AMQPMessage($textMsg);
+    $channel->basic_publish($msg, '', $queueName);
+    echo " [x] Sent '{$textMsg}'\n";
+}
 
 $channel->close();
 $connection->close();
