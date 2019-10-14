@@ -11,18 +11,27 @@ $connection = new AMQPStreamConnection(
     \getenv('RABBITMQ_PASSWORD')
 );
 
-// connection to one of free channel
+// connecting to one of free channel
 $channel = $connection->channel();
-echo 'Channel id: ' . $channel->getChannelId() . "\n";
+echo " [*] Connected to {$channel->getChannelId()} channel\n";
 
-// creating queue if not exist
-$queueName = 'queue01';
+// creating a queue if not exists
+$queueName = 'hello';
 $channel->queue_declare($queueName, false, false, false, false);
 
-$callback = static function ($msg) {
+echo " [*] Waiting for messages. To exit press CTRL+C\n";
+$callback = function ($msg) {
     echo ' [x] Received ', $msg->body, "\n";
 };
+
+// consuming message
 $channel->basic_consume($queueName, '', false, true, false, false, $callback);
-if ($channel->is_consuming()) {
+
+// does not close connection while consuming
+while ($channel->is_consuming()) {
     $channel->wait();
 }
+
+// closing connection
+$channel->close();
+$connection->close();

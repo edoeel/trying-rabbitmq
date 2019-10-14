@@ -13,22 +13,22 @@ $connection = new AMQPStreamConnection(
     \getenv('RABBITMQ_PASSWORD')
 );
 
-// connection to one of free channel
+// connecting to one of free channel
 $channel = $connection->channel();
-echo 'Channel id: ' . $channel->getChannelId() . "\n";
+echo " [*] Connected to {$channel->getChannelId()} channel\n";
 
-// creating queue if not exist
-$queueName = 'queue01';
+// creating a queue if not exists
+$queueName = 'hello';
 $channel->queue_declare($queueName, false, false, false, false);
 
-// publishing message
-$messageCount = $_SERVER['argv'][1];
-for ($x = 0; $x < $messageCount; $x++) {
-    $textMsg = 'Hello World from ' . date('Y-m-d H:i:s');
-    $msg = new AMQPMessage($textMsg);
-    $channel->basic_publish($msg, '', $queueName);
-    echo " [x] Sent '{$textMsg}'\n";
-}
+// creating message
+$msgString = 'Hello World!';
+$msg = new AMQPMessage($msgString);
 
+// publishing message
+$channel->basic_publish($msg, '', $queueName);
+echo " [x] Sent '{$msgString}'\n";
+
+// closing connection
 $channel->close();
 $connection->close();
