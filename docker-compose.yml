@@ -1,19 +1,22 @@
-version: "3.6"
+version: "3.7"
 services:
   rabbitmq:
-    image: "rabbitmq:3-management"
+    image: rabbitmq:3.8.0-management-alpine
+    hostname: rabbitmq # workaround for persistent queue
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./.docker/rabbitmq/data:/var/lib/rabbitmq
   php-fpm:
     build:
       context: .docker/php
       dockerfile: Dockerfile
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     volumes:
-      - "./:/var/www/html"
+      - ./:/var/www/html
     depends_on:
       - rabbitmq
     environment:
