@@ -24,10 +24,11 @@ $callback = function ($msg) {
     echo ' [x] Received ', $msg->body, "\n";
     sleep(substr_count($msg->body, '.'));
     echo " [x] Done\n";
+    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
 };
 
 // consuming message
-$channel->basic_consume($queueName, '', false, true, false, false, $callback);
+$channel->basic_consume($queueName, '', false, false, false, false, $callback);
 
 // does not close connection while consuming
 while ($channel->is_consuming()) {
