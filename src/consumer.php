@@ -27,6 +27,8 @@ $callback = function ($msg) {
     $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
 };
 
+// don't dispatch a new message to a worker until it has processed and acknowledged the previous one
+$channel->basic_qos(null, 1, null);
 // consuming message
 $channel->basic_consume($queueName, '', false, false, false, false, $callback);
 
