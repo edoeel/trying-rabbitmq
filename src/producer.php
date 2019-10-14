@@ -26,7 +26,7 @@ $msgString = implode(' ', array_slice($argv, 1));
 if (empty($msgString)) {
     $msgString = 'Hello World!';
 }
-$msg = new AMQPMessage($msgString);
+$msg = new AMQPMessage($msgString, array('delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT));
 
 // publishing message
 $channel->basic_publish($msg, '', $queueName);
