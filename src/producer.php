@@ -19,7 +19,7 @@ echo " [*] Connected to {$channel->getChannelId()} channel\n";
 
 // creating a queue if not exists
 $queueName = 'hello';
-$channel->queue_declare($queueName, false, false, false, false);
+$channel->queue_declare($queueName, false, true, false, false);
 
 // creating message
 $msgString = implode(' ', array_slice($argv, 1));

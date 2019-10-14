@@ -17,7 +17,7 @@ echo " [*] Connected to {$channel->getChannelId()} channel\n";
 
 // creating a queue if not exists
 $queueName = 'hello';
-$channel->queue_declare($queueName, false, false, false, false);
+$channel->queue_declare($queueName, false, true, false, false);
 
 echo " [*] Waiting for messages. To exit press CTRL+C\n";
 $callback = function ($msg) {
