@@ -22,7 +22,7 @@ http://localhost:15672/
 produce a message
 ```sh
 $ docker-compose exec php-fpm sh
-$ php src/producer.php
+$ php src/producer.php [MESSAGE]
 ```
 
 start a consumer
