@@ -18,10 +18,6 @@ services:
       - mysql
       - rabbitmq
     environment:
-      - DATABASE_TYPE=mysql
-      - DATABASE_USER=rabbitmq-user
-      - DATABASE_PASSWORD=rabbitmq-password
-      - DATABASE_NAME=rabbitmq-db
       - RABBITMQ_HOST=localhost
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=guest
