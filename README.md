@@ -13,3 +13,20 @@ start docker containers
 ```sh
 $ docker-compose up -d
 ```
+
+go to RabbitMQ management page
+```
+http://localhost:15672/
+```
+
+produce a message
+```sh
+$ docker-compose exec php-fpm sh
+$ php src/producer.php
+```
+
+start a consumer
+```sh
+$ docker-compose exec php-fpm sh
+$ php src/consumer.php
+```
