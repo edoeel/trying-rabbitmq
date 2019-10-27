@@ -5,6 +5,18 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
+/**
+ * @return string
+ */
+function generateMessage($argv): string
+{
+    $msgString = implode(' ', array_slice($argv, 1));
+    if (true === empty($msgString)) {
+        $msgString = 'Hello World!';
+    }
+    return $msgString;
+}
+
 // opening rabbitmq connection
 $connection = new AMQPStreamConnection(
     \getenv('RABBITMQ_HOST'),
@@ -17,19 +29,16 @@ $connection = new AMQPStreamConnection(
 $channel = $connection->channel();
 echo " [*] Connected to {$channel->getChannelId()} channel\n";
 
-// creating a queue if not exists
-$queueName = 'hello';
-$channel->queue_declare($queueName, false, true, false, false);
+// creating an exchange if not exists
+$exchangeName = 'logs';
+$channel->exchange_declare($exchangeName, 'fanout', false, false, false);
 
 // creating message
-$msgString = implode(' ', array_slice($argv, 1));
-if (empty($msgString)) {
-    $msgString = 'Hello World!';
-}
-$msg = new AMQPMessage($msgString, array('delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT));
+$msgString = generateMessage($_SERVER['argv']);
+$msg = new AMQPMessage($msgString);
 
-// publishing message
-$channel->basic_publish($msg, '', $queueName);
+// publishing message to exchange
+$channel->basic_publish($msg, $exchangeName);
 echo " [x] Sent '{$msgString}'\n";
 
 // closing connection

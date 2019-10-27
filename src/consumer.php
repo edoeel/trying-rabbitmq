@@ -16,22 +16,22 @@ $connection = new AMQPStreamConnection(
 $channel = $connection->channel();
 echo " [*] Connected to {$channel->getChannelId()} channel\n";
 
-// creating a queue if not exists
-$queueName = 'hello';
-$channel->queue_declare($queueName, false, true, false, false);
+// creating an exchange if not exists
+$exchangeName = 'logs';
+$channel->exchange_declare($exchangeName, 'fanout', false, false, false);
 
-echo " [*] Waiting for messages. To exit press CTRL+C\n";
-$callback = function ($msg) {
-    echo ' [x] Received ', $msg->body, "\n";
-    sleep(substr_count($msg->body, '.'));
-    echo " [x] Done\n";
-    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+// get queue temporary name
+[$queueName, ,] = $channel->queue_declare('', false, false, true, false);
+
+// bind queue to exchange
+$channel->queue_bind($queueName, $exchangeName);
+
+echo " [*] Waiting for logs. To exit press CTRL+C\n";
+$callback = static function ($msg) {
+    echo ' [x] ', $msg->body, "\n";
 };
 
-// don't dispatch a new message to a worker until it has processed and acknowledged the previous one
-$channel->basic_qos(null, 1, null);
-// consuming message
-$channel->basic_consume($queueName, '', false, false, false, false, $callback);
+$channel->basic_consume($queueName, '', false, true, false, false, $callback);
 
 // does not close connection while consuming
 while ($channel->is_consuming()) {
